@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"slices"
@@ -10,7 +11,7 @@ import (
 )
 
 var shellBuiltins = []string{
-	"echo", "type", "exit",
+	"echo", "type", "exit", "pwd",
 }
 
 func main() {
@@ -24,6 +25,11 @@ func main() {
 
 		if cmd == "exit" {
 			break
+		}
+
+		if cmd == "pwd" {
+			handlePWD()
+			continue
 		}
 
 		after, found := strings.CutPrefix(cmd, "echo ")
@@ -77,4 +83,12 @@ func handleType(after string) {
 		return
 	}
 	fmt.Printf("%s is %s\n", after, s)
+}
+
+func handlePWD() {
+	path, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(path)
 }
