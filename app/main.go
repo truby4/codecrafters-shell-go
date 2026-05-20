@@ -12,6 +12,10 @@ func main() {
 			fmt.Println(err.Error())
 		}
 
+		if cmd == "exit" {
+			break
+		}
+
 		fmt.Printf("%s: command not found\n", cmd)
 	}
 }
