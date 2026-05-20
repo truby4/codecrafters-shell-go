@@ -38,7 +38,20 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("%s: command not found\n", cmd)
+		split_cmd := strings.Fields(cmd)
+
+		e, err := exec.LookPath(split_cmd[0])
+		if err != nil {
+			fmt.Printf("%s: command not found\n", split_cmd[0])
+			continue
+		}
+
+		out, err := exec.Command(e, split_cmd[1:]...).Output()
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
+		fmt.Print(string(out))
 	}
 }
 
