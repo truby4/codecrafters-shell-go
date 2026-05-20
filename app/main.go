@@ -1,13 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
-// Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
-var _ = fmt.Print
-
 func main() {
-	// TODO: Uncomment the code below to pass the first stage
+	var cmd string
 	fmt.Print("$ ")
+	_, err := fmt.Scanln(&cmd)
+	if err != nil {
+		panic(errors.New("unable to scan command"))
+	}
+
+	fmt.Printf("%s: command not found\n", cmd)
 }
