@@ -11,7 +11,7 @@ import (
 )
 
 var shellBuiltins = []string{
-	"echo", "type", "exit", "pwd",
+	"echo", "type", "exit", "pwd", "cd",
 }
 
 func main() {
@@ -32,7 +32,13 @@ func main() {
 			continue
 		}
 
-		after, found := strings.CutPrefix(cmd, "echo ")
+		after, found := strings.CutPrefix(cmd, "cd")
+		if found {
+			handleCD(strings.TrimSpace(after))
+			continue
+		}
+
+		after, found = strings.CutPrefix(cmd, "echo ")
 		if found {
 			fmt.Println(after)
 			continue
@@ -91,4 +97,11 @@ func handlePWD() {
 		log.Println(err)
 	}
 	fmt.Println(path)
+}
+
+func handleCD(arg string) {
+	err := os.Chdir(arg)
+	if err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", arg)
+	}
 }
