@@ -100,6 +100,9 @@ func handlePWD() {
 }
 
 func handleCD(arg string) {
+	if arg == "~" {
+		arg = os.Getenv("HOME")
+	}
 	err := os.Chdir(arg)
 	if err != nil {
 		fmt.Printf("cd: %s: No such file or directory\n", arg)
