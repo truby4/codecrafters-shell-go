@@ -140,10 +140,16 @@ func lex(after string) ([]string, error) {
 
 	inSingleQuote := false
 	inDoubleQuote := false
+	escaping := false
 
 	for _, ch := range after {
-		switch ch {
+		if escaping {
+			current = append(current, ch)
+			escaping = false
+			continue
+		}
 
+		switch ch {
 		// toggle single quote tracker
 		case '\'':
 			if inDoubleQuote {
@@ -157,10 +163,16 @@ func lex(after string) ([]string, error) {
 		case '"':
 			inDoubleQuote = !inDoubleQuote
 
+		case '\\':
+			escaping = true
+
 		case ' ', '\t', '\n':
 			if inSingleQuote || inDoubleQuote {
 				// spaces are part of the token
 				current = append(current, ch)
+			} else if escaping {
+				current = append(current, ch)
+				escaping = !escaping
 			} else {
 				// spaces outside quotes means to split the token
 				if len(current) > 0 {
