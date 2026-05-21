@@ -36,7 +36,7 @@ func main() {
 
 		args, err := lex(after)
 		if err != nil {
-			fmt.Printf("err: %s", err.Error())
+			fmt.Printf("err: %s\n", err.Error())
 			continue
 		}
 
@@ -161,10 +161,18 @@ func lex(after string) ([]string, error) {
 			}
 
 		case '"':
-			inDoubleQuote = !inDoubleQuote
+			if inSingleQuote {
+				current = append(current, ch)
+			} else {
+				inDoubleQuote = !inDoubleQuote
+			}
 
 		case '\\':
-			escaping = true
+			if !inSingleQuote {
+				escaping = true
+			} else {
+				current = append(current, ch)
+			}
 
 		case ' ', '\t', '\n':
 			if inSingleQuote || inDoubleQuote {
