@@ -139,16 +139,26 @@ func lex(after string) ([]string, error) {
 	var current []rune
 
 	inSingleQuote := false
+	inDoubleQuote := false
 
 	for _, ch := range after {
 		switch ch {
 
 		// toggle single quote tracker
 		case '\'':
-			inSingleQuote = !inSingleQuote
+			if inDoubleQuote {
+				// single quote inside double
+				// quote is part of the token
+				current = append(current, ch)
+			} else {
+				inSingleQuote = !inSingleQuote
+			}
+
+		case '"':
+			inDoubleQuote = !inDoubleQuote
 
 		case ' ', '\t', '\n':
-			if inSingleQuote {
+			if inSingleQuote || inDoubleQuote {
 				// spaces are part of the token
 				current = append(current, ch)
 			} else {
