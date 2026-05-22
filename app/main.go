@@ -32,13 +32,14 @@ func main() {
 			continue
 		}
 
-		cmd, after := splitInput(input)
-
-		args, err := lex(after)
+		args, err := lex(input)
 		if err != nil {
 			fmt.Printf("err: %s\n", err.Error())
 			continue
 		}
+
+		cmd := args[0]
+		args = args[1:]
 
 		if fn, exists := builtins[cmd]; exists {
 			fn(args)
